@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Rohit Negi Bhaiya</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #8e2de2, #4a00e0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 70vw; /* Chat width 70% of viewport */
+            height: 100vh;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            position: relative;
+        }
+
+        .chat-header {
+            background-color: #6200ea;
+            color: white;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center; /* Vertically align items */
+        }
+
+        .header-dp {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ddd; /* Grey background for default DP */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #888;
+            font-size: 1.5em;
+            margin-right: 10px;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #f0f0f0;
+            margin-bottom: 3px;
+        }
+
+        .header-status {
+            font-size: 0.8em;
+            opacity: 0.8;
+            color: #28f766;
+            font-weight: bold;
+        }
+
+        .animation-area {
+            width: 15vw;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            z-index: 50;
+        }
+
+        .left-animation {
+            left: -15vw;
+        }
+
+        .right-animation {
+            right: -15vw;
+        }
+
+        .emoji {
+            font-size: 2em;
+            animation: fall linear infinite;
+            opacity: 0;
+            position: absolute;
+            white-space: nowrap;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -100px;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        .chat-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            padding: 12px 18px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            clear: both;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #DCF8C6;
+            float: right;
+            align-self: flex-end;
+            color: #075E54;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .bot-message {
+            background-color: #ECE5DD;
+            float: left;
+            align-self: flex-start;
+            color: #000;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-input {
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ddd;
+            display: flex;
+            flex-shrink: 0;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            margin-right: 10px;
+            font-size: 1em;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .chat-input button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-input button:hover {
+            background-color: #388E3C;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 100vw;
+            }
+
+            .animation-area {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="animation-area left-animation">
+        </div>
+
+        <div class="chat-content">
+            <div class="chat-header">
+                <div class="header-dp">
+                    <span style="font-style: italic;">RN</span>
+                </div>
+                <div class="header-content">
+                    <div class="header-name">Rohit Negi Bhaiya</div>
+                    <div class="header-status">Online</div>
+                </div>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be displayed here -->
+            </div>
+            <div class="chat-input">
+                <input type="text" id="message-input" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+
+        <div class="animation-area right-animation">
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const leftAnimationArea = document.querySelector('.left-animation');
+        const rightAnimationArea = document.querySelector('.right-animation');
+        const apiKey = process.env.MY_API_KEY; // Replace with your actual API key
+
+        // Emoji sets
+        const studyEmojis = ['📚', '✏️', '💡', '🔬', '💻', '🧠'];
+
+        // Function to create and animate emojis
+        function createFallingEmoji(area) {
+            const emoji = document.createElement('div');
+            emoji.classList.add('emoji');
+            emoji.textContent = studyEmojis[Math.floor(Math.random() * studyEmojis.length)];
+            area.appendChild(emoji);
+
+            // Randomize animation properties
+            const animationDuration = Math.random() * 5 + 3; // 3-8 seconds
+            const animationDelay = Math.random() * 2; // Up to 2 seconds delay
+            const startPosition = Math.random() * 80; // Random horizontal start
+
+            emoji.style.left = `${startPosition}%`;
+            emoji.style.animationDuration = `${animationDuration}s`;
+            emoji.style.animationDelay = `${animationDelay}s`;
+
+            // Remove emoji after animation completes
+            emoji.addEventListener('animationiteration', () => {
+                emoji.remove();
+                createFallingEmoji(area); // Create a new one
+            });
+
+            return emoji;
+        }
+
+        // Initialize animations
+        function initializeAnimations() {
+            // Left Animation
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createFallingEmoji(leftAnimationArea);
+                }, i * 500); // Staggered start
+            }
+
+            // Right Animation
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createFallingEmoji(rightAnimationArea);
+                }, i * 500); // Staggered start
+            }
+        }
+
+        function addMessage(message, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const messageText = messageInput.value.trim();
+            if (!messageText) return;
+
+            addMessage(messageText, true);
+            messageInput.value = '';
+
+            // Call the Gemini API using curl
+            try {
+                const response = await fetchGeminiAPI(messageText);
+                addMessage(response, false);
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                addMessage("Sorry, I'm having trouble connecting right now.", false);
+            }
+        }
+
+        async function fetchGeminiAPI(message) {
+            const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+            const systemInstruction = `You now have to behave like my teacher, Rohit Negi, who is very helpful and humble towards those who genuinely want to learn—not those who waste their time and always take their talks towards to study Like what you currently study in now and mostly talks about there course on coderarmy.
+            He is the founder of CoderArmy, which provides quality education. Currently, he is teaching us Full-Stack Web Development and Blockchain in the Nexus batch, along with a GenAI series on YouTube.
+            He resolves our doubts in a very simple and easy way. He goes to the gym daily—yes, he's a gym guy and quite health-conscious. His favorite player is Virat Kohli. He constantly motivates us and clears our doubts with patience.
+            He often uses phrases like “Chamka” and “Haan ji, samajh gaye” when we understand the concept.
+            He had also taught us DSA in the previous course. Whenever we feel demotivated, he supports us and encourages us to level up and come back even stronger.
+            He frequently uses heart emojis to show how much he cares for us.
+            His One slogan "Your Time is My Fees","Consistency is Key of Sucess".
+            He lives in Dwarka, Delhi, and has a friend named Aditya who teaches System Design very well in the Nexus batch. Rohit Bhaiya is also a foodie—he loves eating delicious food. He Talks Mostly
+            in Hindi word in english and talk he reffers boy student as bhai and if girls then reffers them their name**
+            He ignore gup-shup mostly time say stay focued and this is the time for hard word`;
+            
+            const data = {
+                "contents": [
+                    {
+                        "parts": [
+                            {
+                                "text": systemInstruction + " User Query: " + message
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-goog-api-key': apiKey
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const responseData = await response.json();
+                console.log("Gemini API Response:", responseData);
+
+                const botMessage = responseData.candidates[0].content.parts[0].text;
+                return botMessage;
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                return "Sorry, I'm having trouble connecting right now.", false;
+            }
+        }
+
+
+        // Initialize
+        initializeAnimations();
+    </script>
+</body>
+
+</html>

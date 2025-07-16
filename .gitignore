@@ -1,0 +1,11 @@
+# Node modules
+/node_modules/
+
+# Main entry file
+index.js
+
+# Dependency lock file
+package-lock.json
+
+# Project metadata
+package.json
